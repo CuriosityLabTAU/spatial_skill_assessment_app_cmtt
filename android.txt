@@ -1,0 +1,3 @@
+title=SpatialSkillAssessmentApp
+author=Goren Gordon
+orientation=landscape

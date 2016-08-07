@@ -1,0 +1,154 @@
+#:kivy 1.0
+#:import kivy kivy
+#:import win kivy.core.window
+
+<ZeroScreen>:
+    start_button_pre: start_button_pre
+    start_button_post: start_button_post
+    subject_id: subject_id
+    name: 'zero_screen'
+    Widget:
+        canvas.before:
+            Color:
+                rgba: 0.2,0.3,0.4,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        LoggedButton:
+            id: start_button_pre
+            name: 'start_button_pre'
+            background_color: 1,0,1,1
+            background_normal: ''
+            text: 'Start Pre'
+            font_size: 16
+            size: root.width * 0.15, root.height * 0.08
+            pos: root.width * 0.65 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
+            on_press: app.press_start(1)
+
+        LoggedButton:
+            id: start_button_post
+            name: 'start_button_post'
+            background_color: 1,0,1,1
+            background_normal: ''
+            text: 'Start Post'
+            font_size: 16
+            size: root.width * 0.175, root.height * 0.08
+            pos: root.width * 0.85 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
+            on_press: app.press_start(2)
+
+        Label:
+            text: "Subject ID:"
+            size: root.width * 0.175, root.height * 0.08
+            pos: root.width * 0.05 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
+
+        LoggedTextInput:
+            id: subject_id
+            name: 'subject_id'
+            text: ''
+            font_size: 16
+            multiline: False
+            size: root.width * 0.40, root.height * 0.08
+            pos: root.width * 0.33 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
+
+<QuestionScreen>
+    name: 'question_screen'
+
+    Widget:
+        canvas.before:
+            Color:
+                rgba: 1,1,1,1
+            Rectangle:
+                size:self.size
+                pos:self.pos
+
+        Image:
+            canvas.after:
+                Color:
+                    rgba: 1,0,0,1
+                Line:
+                    points:[root.width*0.55, root.height*0.05, root.width*0.95, root.height*0.05, root.width*0.95, root.height*0.9, root.width*0.55, root.height*0.9]
+                    close:True
+                    width:3
+            id: pieces
+            name: 'pieces'
+            size: root.width * 0.65 , root.width * 0.65
+            pos: root.width * 0.75 - self.width * 0.5, root.height * 0.4 - self.height * 0.5
+            source: 'images/CMTT_A_Order1_Page_03.jpg'
+
+        LoggedButton:
+            canvas.before:
+                Color:
+                    rgba: 0,0,1,1
+                Line:
+                    points:[self.x, self.y, self.x+self.width, self.y, self.x+self.width, self.y+self.height, self.x, self.y+self.height]
+                    close:True
+                    width:3
+            id: A_button
+            name: 'A'
+            size: root.width * 0.5 * 456.0 / 1000.0, root.width * 0.5 * 570.0 / 1000.0
+            pos: root.width * 0.40 - self.width * 0.5, root.height * 0.25 - self.height * 0.5
+            on_press: root.pressed(self.name)
+            background_normal: 'images/CMTT_A_Order1_Page_02_A.jpg'
+
+        LoggedButton:
+            canvas.before:
+                Color:
+                    rgba: 0,0,1,1
+                Line:
+                    points:[self.x, self.y, self.x+self.width, self.y, self.x+self.width, self.y+self.height, self.x, self.y+self.height]
+                    close:True
+                    width:3
+            id: B_button
+            name: 'B'
+            size: root.width * 0.5 * 456.0 / 1000.0, root.width * 0.5 * 570.0 / 1000.0
+            pos: root.width * 0.15 - self.width * 0.5, root.height * 0.25 - self.height * 0.5
+            on_press: root.pressed(self.name)
+            background_normal: 'images/CMTT_A_Order1_Page_02_B.jpg'
+
+        LoggedButton:
+            canvas.before:
+                Color:
+                    rgba: 0,0,1,1
+                Line:
+                    points:[self.x, self.y, self.x+self.width, self.y, self.x+self.width, self.y+self.height, self.x, self.y+self.height]
+                    close:True
+                    width:3
+            id: C_button
+            name: 'C'
+            size: root.width * 0.5 * 456.0 / 1000.0, root.width * 0.5 * 570.0 / 1000.0
+            pos: root.width * 0.40 - self.width * 0.5, root.height * 0.7 - self.height * 0.5
+            on_press: root.pressed(self.name)
+            background_normal: 'images/CMTT_A_Order1_Page_02_C.jpg'
+
+        LoggedButton:
+            canvas.before:
+                Color:
+                    rgba: 0,0,1,1
+                Line:
+                    points:[self.x, self.y, self.x+self.width, self.y, self.x+self.width, self.y+self.height, self.x, self.y+self.height]
+                    close:True
+                    width:3
+            id: D_button
+            name: 'D'
+            size: root.width * 0.5 * 456.0 / 1000.0, root.width * 0.5 * 570.0 / 1000.0
+            pos: root.width * 0.15 - self.width * 0.5, root.height * 0.7 - self.height * 0.5
+            on_press: root.pressed(self.name)
+            background_normal: 'images/CMTT_A_Order1_Page_02_D.jpg'
+
+
+<EndScreen>
+    name: 'end_screen'
+    Widget:
+        canvas.before:
+            Color:
+                rgba: 1,1,1,1
+            Rectangle:
+                size:self.size
+                pos:self.pos
+        Label:
+            id: the_end
+            text: "Thank You !!!"
+            font_size:100
+            color: 1,0,1,1
+            pos: root.width * 0.5 - self.width *0.5, root.height * 0.5
+            opacity: 1
