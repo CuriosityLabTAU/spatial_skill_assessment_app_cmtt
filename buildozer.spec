@@ -33,7 +33,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
-requirements = kivy,pycrypto,numpy,twisted,plyer
+requirements = kivy,pycrypto,numpy,twisted,plyer,android
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -93,7 +93,7 @@ android.permissions = INTERNET,ACCESS_WIFI_STATE,CHANGE_WIFI_STATE,CHANGE_NETWOR
 #android.ant_path =
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
-#android.p4a_dir =
+p4a.source_dir = /home/prg/projects/python-for-android
 
 # (list) python-for-android whitelist
 #android.p4a_whitelist =

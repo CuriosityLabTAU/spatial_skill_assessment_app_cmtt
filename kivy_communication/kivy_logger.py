@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import json
+import json, os
 
 is_pycrypto = True
 try:
@@ -50,19 +50,26 @@ class KL:
     log = None
 
     @staticmethod
-    def start(mode=None, pathname=None, the_ip=None):
+    def start(mode=None, pathname=None, file_prefix=None, the_ip=None):
+
         if not pathname:
             return
+        else:
+            try:
+                os.mkdir(pathname)
+            except OSError:
+                pass
 
         KL.log = KivyLogger
         KL.log.pathname = pathname
+        KL.log.file_prefix = file_prefix
 
         if not the_ip:
             KL.log.configure()
         else:
             KL.log.ip = the_ip
 
-        print(pathname)
+        print("Pathname: ", pathname)
         if mode is None:
             mode = []
             Logger.info("KL mode:" + str(mode))
@@ -86,6 +93,7 @@ class KivyLogger:
     store = None
 
     pathname = ''
+    file_prefix = ''
     ip = None
 
     @staticmethod
@@ -112,7 +120,7 @@ class KivyLogger:
         KivyLogger.t0 = datetime.now()
         if DataMode.file in KivyLogger.base_mode:
             KivyLogger.filename = join(KivyLogger.pathname,
-                                       KivyLogger.t0.strftime('%Y_%m_%d_%H_%M_%S_%f') + '.log')
+                                       KivyLogger.file_prefix + KivyLogger.t0.strftime('%Y-%m-%d-%H-%M-%S-%f') + '.log')
             KivyLogger.store = JsonStore(KivyLogger.filename)
             Logger.info("KivyLogger: " + str(KivyLogger.filename))
 
@@ -135,9 +143,11 @@ class KivyLogger:
     @staticmethod
     def insert(action=LogAction.none, obj='', comment='', t=None, mode=None):
         if t is None:
-            t = datetime.now()
+            t = datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')
+
         data = {'time':t, 'action':action, 'obj':obj, 'comment':comment}
         KivyLogger.logs.append(data)
+
         if not mode:
             mode = KivyLogger.base_mode
 
@@ -150,7 +160,8 @@ class KivyLogger:
             KivyLogger.send_data(data_str)
 
         if DataMode.file in mode:
-            KivyLogger.save(data_str)
+            print data
+            KivyLogger.save(data)
 
     # file
     @staticmethod
@@ -161,16 +172,20 @@ class KivyLogger:
                 KivyLogger.store.put(datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f'),
                                      data=str(data_str).encode('ascii'))
             else:
-                KivyLogger.store.put(datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f'),
-                                     data=data_str)
+                #KivyLogger.store.put(datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f'),
+                #                     data=data_str)
+                #KivyLogger.store.put(datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f'),
+                #     time=data_str['time'], action=data_str['action'], comment=data_str['comment'], obj=data_str['obj'])
+                KivyLogger.store[datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')] = data_str
             Logger.info("save:" + str(KivyLogger.filename))
-        except:
+        except Exception as e:
+            print e.message, e.args
             Logger.info("save: did not work")
 
     # encryption
     @staticmethod
     def to_str(log):
-        data = {'time': log['time'].strftime('%Y_%m_%d_%H_%M_%S_%f'),
+        data = {'time': log['time'],
                 'action': log['action'],
                 'obj': log['obj'],
                 'comment': log['comment']}
@@ -245,7 +260,10 @@ class WidgetLogger(Widget):
 
     def on_press(self, *args):
         super(WidgetLogger, self).on_press(*args)
-        KL.log.insert(action=LogAction.press, obj=self.name, comment='')
+        try:
+            KL.log.insert(action=LogAction.press, obj=self.name, comment='')
+        except AttributeError:
+            print "KL.log not prepared yet. Skipping logging..."
 
     def log_touch(self, action, touch):
         if KL.log is not None:

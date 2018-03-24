@@ -2,6 +2,8 @@
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 from twisted.internet import reactor, protocol
+from time import sleep
+from sys import stdout
 
 
 # the static class for the kivy communication
@@ -19,8 +21,8 @@ class KC:
 class EchoClient(protocol.Protocol):
     parents = []
 
-    def __init__(self):
-        pass
+    def __init__(self, factory):
+        self.factory = factory
 
     def connectionMade(self):
         self.factory.client.on_connection(self.transport)
@@ -34,17 +36,37 @@ class EchoClient(protocol.Protocol):
         self.factory.client.data_received(data)
 
 
-class EchoFactory(protocol.ClientFactory):
+class EchoFactory(protocol.ReconnectingClientFactory):
     protocol = EchoClient
 
     def __init__(self, client):
         self.client = client
 
-    def clientConnectionLost(self, conn, reason):
-        self.client.send_status("connection lost:" + str(conn) + str(reason))
+    def startedConnecting(self, connector):
+        print 'Started to connect.'
 
-    def clientConnectionFailed(self, conn, reason):
-        self.client.send_status("connection failed:" + str(conn) + str(reason))
+    def buildProtocol(self, addr):
+        print 'Connected.'
+        print 'Resetting reconnection delay'
+        self.resetDelay()
+        return EchoClient(self)
+
+    def clientConnectionLost(self, connector, reason):
+        self.client.send_status("connection lost:" + str(connector) + str(reason))
+        protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+
+    def clientConnectionFailed(self, connector, reason):
+        self.client.send_status("connection failed:" + str(connector) + str(reason))
+        protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector,
+                                                         reason)
+
+    # def clientConnectionLost(self, conn, reason):
+    #     self.client.send_status("connection lost:" + str(conn) + str(reason))
+    #     conn.connect()
+    #
+    # def clientConnectionFailed(self, conn, reason):
+    #     self.client.send_status("connection failed:" + str(conn) + str(reason))
+
 
 
 class TwistedClient:
