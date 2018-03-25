@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = CMTTApp
+title = Spatial
 
 # (str) Package name
 package.name = SpatialSkillAssessmentApp
@@ -25,7 +25,7 @@ source.exclude_dirs = bin
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.1
+version = 2.0
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]

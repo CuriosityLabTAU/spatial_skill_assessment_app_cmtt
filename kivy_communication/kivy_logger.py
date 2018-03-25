@@ -40,6 +40,7 @@ class LogAction:
     text = 'text'
     spinner = 'spinner'
     data = 'data'
+    audio = 'audio'
 
     def __init__(self):
         pass

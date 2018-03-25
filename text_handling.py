@@ -6,7 +6,6 @@ from kivy.clock import Clock
 the_tts = None
 try:
     from plyer import tts
-    tts.speak('hello')
     the_tts = 'plyer'
 except:
     pass
@@ -27,6 +26,7 @@ class TTS:
         TTS.engine =  None
         if the_tts is 'pyttsx':
             TTS.engine = pyttsx.init()
+            engine.runAndWait()
             TTS.engine.setProperty('voice', 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Speech/Voices/Tokens/TTS_MS_EN-US_ZIRA_11.0')
             TTS.engine.connect(topic='finished-utterance', cb=TTS.finished)
 
