@@ -27,17 +27,22 @@ except ImportError:
             ))
         return wrapper
 
+session_types = ['pre', 'post', 'after', 'delay']
+
 class SetupScreenRoom(Screen):
     ip = ''
 
 class ZeroScreen(Screen):
     pass
 
+
 class EndScreen(Screen):
     pass
 
+
 class QuestionScreen(Screen):
     current_question = 0
+    app = None
 
     def on_pre_enter(self, *args):
         self.next_question()
@@ -66,7 +71,6 @@ class QuestionScreen(Screen):
         self.ids['C_button'].name = str(self.current_question) + '_C'
         self.ids['D_button'].name = str(self.current_question) + '_D'
 
-
     def pressed(self, answer):
         print(answer)
         KL.log.insert(action=LogAction.press, obj=answer, comment='user_answer')
@@ -91,9 +95,14 @@ class QuestionScreen(Screen):
 
 class SpatialSkillAssessmentApp(App):
 
+    question_lists = {
+        'pre': [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31],
+        'post': [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32],
+        'after': [10,29,32,16,7,12,25,22,21,19,5,15,9,6,23,4],
+        'delay': [2,17,26,13,11,27,31,18,20,30,28,1,3,8,14,24]
+    }
+
     def build(self):
-
-
         self.sm = ScreenManager()
         self.sm.add_widget(SetupScreenRoom(name='setup_screen_room'))
         self.sm.current = 'setup_screen_room'
@@ -135,6 +144,7 @@ class SpatialSkillAssessmentApp(App):
             name = 'question_screen_'+str(i).zfill(2)
             self.questions.append(QuestionScreen(name=name))
             self.questions[-1].current_question = i
+            self.questions[-1].app = self
             self.sm.add_widget(self.questions[-1])
 
         self.end_screen = EndScreen(name='end_screen')
@@ -152,13 +162,13 @@ class SpatialSkillAssessmentApp(App):
         self.subject_id = subject_id
         self.subject_initial = subject_initial
 
-        session = "pre" if pre_post_flag == 1 else "post"
+        self.session = session_types[pre_post_flag - 1]
 
         if self.subject_id == "" or self.subject_initial == "":
             return
 
         KL.start(mode=[DataMode.file, DataMode.communication, DataMode.ros], pathname=self.user_data_dir,
-                 file_prefix=session + "_" + self.subject_id + "_" + self.subject_initial + "_", the_ip=self.local_ip)
+                 file_prefix=self.session + "_" + self.subject_id + "_" + self.subject_initial + "_", the_ip=self.local_ip)
 
         KL.log.insert(action=LogAction.data, obj='SpatialCMTTAssessmentApp', comment='start')
 
@@ -166,8 +176,16 @@ class SpatialSkillAssessmentApp(App):
             id_f.write(self.subject_id+";"+self.subject_initial)
             id_f.close()
 
-        self.sm.current = 'question_screen_' + str(pre_post_flag).zfill(2)
+        self.current_question = 0
+        self.next_question()
         self.android_set_hide_menu()
+
+    def next_question(self):
+        if self.current_question < 16:
+            self.sm.current = 'question_screen_' + str(self.question_lists[self.session][self.current_question]).zfill(2)
+            self.current_question += 1
+        else:
+            self.sm.current = 'end_screen'
 
     def end_game(self):
         self.stop()

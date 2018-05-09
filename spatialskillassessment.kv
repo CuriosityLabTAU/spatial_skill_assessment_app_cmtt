@@ -66,6 +66,28 @@
             pos: root.width * 0.5 + self.width * 0.5, root.height * 0.5 - self.height * 0.5
             on_press: app.start_assessment(2, subject_id.text, subject_initial.text)
 
+        LoggedButton:
+            id: start_button_after
+            name: 'start_button_after'
+            background_color: 1,0,1,1
+            background_normal: ''
+            text: 'Start After'
+            font_size: 16 * root.width/800
+            size: root.width * 0.175, root.height * 0.1
+            pos: root.width * 0.5 - self.width * 1.5, root.height * 0.5 - root.height * 0.25
+            on_press: app.start_assessment(3, subject_id.text, subject_initial.text)
+
+        LoggedButton:
+            id: start_button_delay
+            name: 'start_button_delay'
+            background_color: 1,0,1,1
+            background_normal: ''
+            text: 'Start Delay'
+            font_size: 16 * root.width/800
+            size: root.width * 0.175, root.height * 0.1
+            pos: root.width * 0.5 + self.width * 0.5, root.height * 0.5 - root.height * 0.25
+            on_press: app.start_assessment(4, subject_id.text, subject_initial.text)
+
         Label:
             text: "Subject ID:"
             font_size: 16 * root.width/800
