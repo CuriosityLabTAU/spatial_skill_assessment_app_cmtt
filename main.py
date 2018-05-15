@@ -48,9 +48,9 @@ class QuestionScreen(Screen):
         self.next_question()
 
     def on_enter(self, *args):
-        if self.current_question < 3:
+        if self.app.current_question == 1:
             TTS.speak(['Look at these pieces in the red card. Look at these pictures in the blue cards. If you put the pieces in the red card together, they will make one of the pictures in the blue cards. Press the picture the pieces make.'])
-        elif self.current_question < 6:
+        else:
             TTS.speak(['Press the picture the pieces make.'])
 
     def next_question(self, current_question=None):
@@ -74,23 +74,24 @@ class QuestionScreen(Screen):
     def pressed(self, answer):
         print(answer)
         KL.log.insert(action=LogAction.press, obj=answer, comment='user_answer')
-        if self.current_question < 31:
-            next_question = self.current_question + 2
-            next_screen = 'question_screen_' + str(next_question).zfill(2)
-            self.manager.current = next_screen
-        else:
-            # self.ids['pieces'].source = ''
-            # self.ids['A_button'].background_disabled_normal = ''
-            # self.ids['B_button'].background_disabled_normal = ''
-            # self.ids['C_button'].background_disabled_normal = ''
-            # self.ids['D_button'].background_disabled_normal = ''
-            # self.ids['C_button'].text = 'The End'
-            # self.ids['C_button'].font_size =36
-            # self.ids['C_button'].color = (0,1,0,1)
-            # self.ids['C_button'].background_color = (1,0,1,1)
-            # for i in self.ids:
-            #     self.ids[i].disabled = True
-            self.manager.current = 'end_screen'
+        self.app.next_question()
+        # if self.current_question < 31:
+        #     next_question = self.current_question + 2
+        #     next_screen = 'question_screen_' + str(next_question).zfill(2)
+        #     self.manager.current = next_screen
+        # else:
+        #     # self.ids['pieces'].source = ''
+        #     # self.ids['A_button'].background_disabled_normal = ''
+        #     # self.ids['B_button'].background_disabled_normal = ''
+        #     # self.ids['C_button'].background_disabled_normal = ''
+        #     # self.ids['D_button'].background_disabled_normal = ''
+        #     # self.ids['C_button'].text = 'The End'
+        #     # self.ids['C_button'].font_size =36
+        #     # self.ids['C_button'].color = (0,1,0,1)
+        #     # self.ids['C_button'].background_color = (1,0,1,1)
+        #     # for i in self.ids:
+        #     #     self.ids[i].disabled = True
+        #     self.manager.current = 'end_screen'
 
 
 class SpatialSkillAssessmentApp(App):
