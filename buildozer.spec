@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = Spatial1
+title = SpatialAssessment
 
 # (str) Package name
 package.name = SpatialSkillAssessmentApp1
